@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ImagePlus, X, ChevronRight, Loader2, Target } from 'lucide-react';
+import { ImagePlus, X, ChevronRight, Loader2, Target, History } from 'lucide-react';
 import { ArtifactFormData } from '../types';
+import { HistoryItem } from '../App';
 
 interface Props {
   onAnalyze: (images: string[], data: ArtifactFormData) => void;
   isLoading: boolean;
   error: string | null;
+  history?: HistoryItem[];
+  onViewHistory?: (item: HistoryItem) => void;
 }
 
 const staggerContainer = {
@@ -22,7 +25,7 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-export function UploadPage({ onAnalyze, isLoading, error }: Props) {
+export function UploadPage({ onAnalyze, isLoading, error, history = [], onViewHistory }: Props) {
   const [images, setImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<ArtifactFormData>({
     name: "Ngọc Bội Quý Trần Triều",
@@ -97,9 +100,9 @@ export function UploadPage({ onAnalyze, isLoading, error }: Props) {
       {/* Cinematic ambient background glow */}
       <div className="fixed top-0 left-[20%] w-[600px] h-[600px] bg-[#D4AF37]/5 rounded-full blur-[150px] pointer-events-none"></div>
 
-      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="max-w-4xl mx-auto relative z-10">
+      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="max-w-4xl mx-auto relative z-10 space-y-12">
         
-        <motion.header variants={fadeUp} className="mb-12 border-b border-[#1F1F1F] pb-6 flex items-center justify-between">
+        <motion.header variants={fadeUp} className="border-b border-[#1F1F1F] pb-6 flex items-center justify-between">
            <div>
              <span className="text-[10px] tracking-[0.3em] uppercase opacity-40">Khởi Tạo Hệ Thống</span>
              <h1 className="font-serif italic text-3xl text-[#D4AF37] mt-2">Lập Hồ Sơ Lưu Trữ</h1>
@@ -112,6 +115,33 @@ export function UploadPage({ onAnalyze, isLoading, error }: Props) {
              </div>
            </div>
         </motion.header>
+
+        {history.length > 0 && (
+           <motion.section variants={fadeUp} className="bg-[#050505]/50 border border-[#1F1F1F] p-8 rounded shadow-2xl">
+              <h2 className="text-[10px] uppercase tracking-widest text-gray-400 mb-6 font-bold flex items-center gap-2">
+                 <History className="w-4 h-4 text-[#D4AF37]" />
+                 Lịch Sử Giao Dịch / Định Giá
+              </h2>
+              <div className="flex space-x-4 overflow-x-auto pb-4 custom-scrollbar">
+                {history.map((item) => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => onViewHistory && onViewHistory(item)}
+                    className="min-w-[280px] p-4 rounded bg-[#0A0A0A] border border-[#1F1F1F] hover:border-[#D4AF37]/40 cursor-pointer transition-colors group flex gap-4"
+                  >
+                     <div className="w-16 h-16 rounded overflow-hidden bg-[#111] shrink-0 border border-[#222]">
+                        {item.images[0] && <img src={item.images[0]} alt="" className="w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all" />}
+                     </div>
+                     <div className="flex-1 flex flex-col justify-center overflow-hidden">
+                        <div className="text-[10px] text-gray-500 mb-1">{new Date(item.date).toLocaleDateString()}</div>
+                        <div className="text-sm text-white font-serif truncate w-full">{item.formData.name}</div>
+                        <div className="text-xs text-[#D4AF37] mt-1">{item.result.valuation}</div>
+                     </div>
+                  </div>
+                ))}
+              </div>
+           </motion.section>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-12">
           

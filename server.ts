@@ -41,7 +41,7 @@ async function startServer() {
       });
 
       const contentsContext = `
-Hãy đóng vai một chuyên gia thẩm định xa xỉ (Sotheby's, Christie's) xuất sắc thế giới về cổ vật, thiên thạch, đá quý.
+Hãy đóng vai một chuyên gia thẩm định xa xỉ (Sotheby's, Christie's) xuất sắc thế giới, một nhà sử học cổ vật, chuyên gia tâm lý học sưu tập và chuyên gia phân tích thị trường tỷ đô.
 Thông tin vật phẩm:
 - Tên: ${req.body.name || "Không rõ"}
 - Trọng lượng: ${req.body.weight || "Không rõ"}
@@ -51,24 +51,33 @@ Thông tin vật phẩm:
 - Lịch sử: ${req.body.history || "Không rõ"}
 - Nguồn gốc/Nơi khám phá: ${req.body.origin || "Không có"}
 
-Yêu cầu phân tích:
-- Ngôn từ tinh tế, sang trọng, nhắm đến giới sưu tập siêu giàu.
-- Mang tính điện ảnh nhưng **phải cô đọng, súc tích và mạch lạc**, không viết văn quá dài dòng lan man. Đảm bảo dung lượng nội dung vừa phải để trải nghiệm người dùng nhanh chóng nhất.
-- LƯU Ý TỐI QUAN TRỌNG: TUYỆT ĐỐI KHÔNG ECHO (lặp lại) hoặc trả về bất kỳ chuỗi base64 hình ảnh nào trong response JSON. Không được phép thêm bất kỳ trường dữ liệu nào ngoài cấu trúc quy định.
+Yêu cầu phân tích TOÀN DIỆN VÀ SÂU SẮC NHẤT:
+- Ngôn từ siêu tinh tế, sang trọng, nhắm đến giới siêu giàu, mang tính điện ảnh, giàu cảm xúc.
+- Đánh giá sâu về khía cạnh địa chất, lịch sử, cấu trúc tinh thể, tình trạng bào mòn tự nhiên.
+- Mô phỏng dữ liệu phân tích từ cộng đồng sưu tập toàn cầu, các sàn đấu giá (Catawiki, Heritage Auctions...).
+- KHÔNG dùng từ ngữ máy móc, chung chung. Mỗi báo cáo phải có linh hồn độc nhất.
+- Đưa ra giá cả so sánh (Comparable collector-grade...).
+- LƯU Ý: TUYỆT ĐỐI KHÔNG ECHO (lặp lại) hoặc trả về bất kỳ chuỗi base64 hình ảnh nào trong response. TRẢ VỀ DUY NHẤT JSON.
 
-TRẢ VỀ DUY NHẤT BẰNG TIẾNG VIỆT THEO ĐỊNH DẠNG JSON với cấu trúc:
+Cấu trúc yêu cầu:
 {
-  "valuation": "Giá trị ước tính (VD: '$120,000 - $180,000')",
-  "rarity_score": Trang điểm độ hiếm (Số nguyên 1-100),
-  "age": "Tuổi đời ước tính",
-  "origin_analysis": "Phân tích nguồn gốc xuất xứ (Tối đa 2 đoạn ngắn)",
-  "analysis": "Nhận định chuyên sâu về chất liệu, tình trạng, độ hiếm (Tối đa 2 đoạn ngắn)",
-  "story": "Câu chuyện cảm xúc nâng tầm vật phẩm (Tối đa 2 đoạn ngắn)",
-  "collector_appeal": "Độ thu hút nhà sưu tập & Định vị xa xỉ (Tối đa 2 đoạn ngắn)",
+  "valuation": "Giá trị ước tính toàn cầu (VD: '$120,000 - $180,000 USD')",
+  "reference_price_range": {
+    "lowest": "Giá sàn tham khảo thấp nhất từng ghi nhận",
+    "highest": "Kỷ lục giá cao nhất từng ghi nhận"
+  },
+  "comparable_sales": "Thông tin so sánh thị trường (VD: 'Những mẫu vật tương tự đã được đấu giá tại Christie\\'s trong khoảng...')",
+  "rarity_score": Điểm độ hiếm (Số nguyên 1-100),
+  "historical_mystery_score": Điểm bí ẩn lịch sử (Số nguyên 1-100),
+  "investment_strength": Điểm tiềm năng đầu tư (Số nguyên 1-100),
+  "age_and_origin": "Xác định niên đại, nguồn gốc và lịch sử hình thành siêu sâu sắc",
+  "surface_structure": "Phân tích cấu trúc bề mặt, oxy hóa, vết bào mòn thời gian",
+  "story": "Storytelling điện ảnh tạo khao khát sở hữu (chạm đến cảm xúc)",
+  "collector_appeal": "Tại sao một tỷ phú sẽ khao khát món đồ này? Tâm lý học sưu tập",
   "sales_post": {
-    "facebook": "Bài đăng FB ngắn gọn nhắm giới siêu giàu",
-    "tiktok": "Kịch bản TikTok VIP ngắn gọn (15-30s)",
-    "auction": "Mô tả sàn đấu giá xúc tích, đẳng cấp"
+    "facebook": "Bài đăng VIP cho giới thượng lưu",
+    "tiktok": "Kịch bản TikTok triệu view",
+    "auction": "Mô tả trong catalog sàn đấu giá quốc tế"
   }
 }
 `;
@@ -101,32 +110,42 @@ TRẢ VỀ DUY NHẤT BẰNG TIẾNG VIỆT THEO ĐỊNH DẠNG JSON với cấu
       
       try {
         const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
+          model: "gemini-1.5-flash",
           contents: { parts },
           config: {
-            maxOutputTokens: 2048,
-            temperature: 0.7,
+            maxOutputTokens: 2500,
+            temperature: 0.8,
             responseMimeType: "application/json",
             responseSchema: {
               type: Type.OBJECT,
               properties: {
-                valuation: { type: Type.STRING, description: "Giá trị ước tính ngắn gọn" },
-                rarity_score: { type: Type.INTEGER, description: "Điểm độ hiếm 1-100" },
-                age: { type: Type.STRING, description: "Tuổi đời ước tính ngắn gọn" },
-                origin_analysis: { type: Type.STRING, description: "Nguồn gốc ngắn gọn (1 đoạn)" },
-                analysis: { type: Type.STRING, description: "Đánh giá chất lượng và chất liệu (1 đoạn)" },
-                story: { type: Type.STRING, description: "Câu chuyện lịch sử ngắn gọn (1 đoạn)" },
-                collector_appeal: { type: Type.STRING, description: "Tại sao nhà sưu tập muốn sở hữu (1 đoạn)" },
+                valuation: { type: Type.STRING, description: "Giá trị thị trường ước tính" },
+                reference_price_range: {
+                  type: Type.OBJECT,
+                  description: "Khoảng giá tham khảo từ những vật phẩm tương tự",
+                  properties: {
+                    lowest: { type: Type.STRING, description: "Giá thấp nhất từng bán thành công" },
+                    highest: { type: Type.STRING, description: "Giá kỷ lục ghi nhận cao nhất" }
+                  }
+                },
+                comparable_sales: { type: Type.STRING, description: "Thị trường toàn cầu và dữ liệu tham khảo" },
+                rarity_score: { type: Type.INTEGER, description: "Điểm vinh danh 1-100" },
+                historical_mystery_score: { type: Type.INTEGER, description: "Khí chất bí ẩn 1-100" },
+                investment_strength: { type: Type.INTEGER, description: "Độ mạnh đầu tư 1-100" },
+                age_and_origin: { type: Type.STRING, description: "Phân tích chi tiết niên đại, nguồn gốc" },
+                surface_structure: { type: Type.STRING, description: "Kết cấu bề mặt và chất liệu sâu sắc" },
+                story: { type: Type.STRING, description: "Nghệ thuật kể chuyện (Storytelling cao cấp)" },
+                collector_appeal: { type: Type.STRING, description: "Sức hút tâm lý sưu tập siêu sang" },
                 sales_post: {
                    type: Type.OBJECT,
                    properties: {
-                     facebook: { type: Type.STRING, description: "Caption Facebook ngắn gọn" },
-                     tiktok: { type: Type.STRING, description: "Kịch bản TikTok VIP 15s" },
-                     auction: { type: Type.STRING, description: "Mô tả sàn đấu giá ngắn gọn" }
+                     facebook: { type: Type.STRING },
+                     tiktok: { type: Type.STRING },
+                     auction: { type: Type.STRING }
                    }
                 }
               },
-              required: ["valuation", "rarity_score", "age", "origin_analysis", "analysis", "story", "collector_appeal", "sales_post"]
+              required: ["valuation", "reference_price_range", "comparable_sales", "rarity_score", "historical_mystery_score", "investment_strength", "age_and_origin", "surface_structure", "story", "collector_appeal", "sales_post"]
             }
           }
         });

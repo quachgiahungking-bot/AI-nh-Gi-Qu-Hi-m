@@ -11,10 +11,16 @@ export interface ArtifactFormData {
 
 export interface ValuationResult {
   valuation: string;
+  reference_price_range?: {
+    lowest: string;
+    highest: string;
+  };
+  comparable_sales: string;
   rarity_score: number;
-  age: string;
-  origin_analysis: string;
-  analysis: string;
+  historical_mystery_score: number;
+  investment_strength: number;
+  age_and_origin: string;
+  surface_structure: string;
   story: string;
   collector_appeal: string;
   sales_post: {

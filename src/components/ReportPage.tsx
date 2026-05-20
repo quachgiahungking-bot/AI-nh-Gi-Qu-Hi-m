@@ -32,11 +32,11 @@ export function ReportPage({ result, formData, images }: Props) {
   
   // Fake chart data based on rarity score to make it look premium
   const chartData = [
-    { subject: 'Chất Liệu', A: Math.min(100, result.rarity_score + 10), fullMark: 100 },
-    { subject: 'Nguồn Gốc', A: Math.min(100, result.rarity_score + 5), fullMark: 100 },
-    { subject: 'Tình Trạng', A: Math.max(50, result.rarity_score - 15), fullMark: 100 },
-    { subject: 'Nhu Cầu', A: Math.min(100, result.rarity_score + 20), fullMark: 100 },
-    { subject: 'Lịch Sử', A: Math.min(100, result.rarity_score + 15), fullMark: 100 },
+    { subject: 'Độ Hiếm', A: Math.min(100, result.rarity_score), fullMark: 100 },
+    { subject: 'Khí Chất Bí Ẩn', A: Math.min(100, result.historical_mystery_score), fullMark: 100 },
+    { subject: 'Tiềm Năng Đầu Tư', A: Math.max(50, result.investment_strength), fullMark: 100 },
+    { subject: 'Nhu Cầu', A: Math.min(100, result.rarity_score + 10), fullMark: 100 },
+    { subject: 'Lịch Sử', A: Math.min(100, result.historical_mystery_score + 5), fullMark: 100 },
   ];
 
   return (
@@ -62,16 +62,16 @@ export function ReportPage({ result, formData, images }: Props) {
         {/* Header */}
         <header className="h-20 border-b border-[#1F1F1F] flex items-center justify-between px-6 md:px-10 bg-[#0A0A0A] sticky top-0 z-50">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex flex-col">
-            <span className="text-[8px] tracking-[0.3em] uppercase opacity-40 text-[#D4AF37]">Hoàn Tất Thẩm Định Chi Tiết</span>
+            <span className="text-[8px] tracking-[0.3em] uppercase opacity-40 text-[#D4AF37]">Báo Cáo Thẩm Định Độc Bản</span>
             <span className="font-serif italic text-lg md:text-xl text-white">{formData.name}</span>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex items-center space-x-6">
             <div className="text-right hidden sm:block">
-              <div className="text-[8px] tracking-[0.2em] opacity-40 uppercase">Độ Xác Tín AI</div>
-              <div className="text-xs text-[#D4AF37] font-mono">99.9%</div>
+              <div className="text-[8px] tracking-[0.2em] opacity-40 uppercase">Chỉ Số Chuyên Gia</div>
+              <div className="text-xs text-[#D4AF37] font-mono">Cấp Độ VIP</div>
             </div>
             <button className="h-10 px-6 bg-white/5 border border-white/10 rounded text-[10px] uppercase tracking-widest hover:bg-white/10 transition-colors flex items-center gap-2 group">
-              <Share2 className="w-3 h-3 group-hover:text-[#D4AF37] transition-colors" /> Xuất File
+              <Share2 className="w-3 h-3 group-hover:text-[#D4AF37] transition-colors" /> Xuất Hồi Ký
             </button>
           </motion.div>
         </header>
@@ -90,7 +90,7 @@ export function ReportPage({ result, formData, images }: Props) {
               
               <div className="absolute top-4 left-4 bg-black/80 backdrop-blur px-3 py-1.5 rounded flex items-center gap-2 border border-white/10">
                 <div className="w-2 h-2 rounded-full bg-red-500 animate-[pulse_2s_ease-in-out_infinite]"></div>
-                <span className="text-[8px] tracking-[0.2em] font-mono uppercase text-[#D4AF37]">Quét Thành Công</span>
+                <span className="text-[8px] tracking-[0.2em] font-mono uppercase text-[#D4AF37]">Phân Tích Sâu (Deep Scan)</span>
               </div>
               
               <div className="absolute bottom-6 left-6 right-6">
@@ -106,25 +106,21 @@ export function ReportPage({ result, formData, images }: Props) {
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 gap-4">
-              <motion.div variants={fadeUp} className="p-4 border border-[#1F1F1F] rounded bg-[#0A0A0A] hover:border-[#333] transition-colors group">
-                <div className="flex items-center gap-2 mb-2">
-                  <Scale className="w-3 h-3 text-gray-500 group-hover:text-[#D4AF37] transition-colors" />
-                  <div className="text-[10px] uppercase tracking-widest opacity-60">Trọng Lượng / KT</div>
-                </div>
-                <div className="font-mono text-xs">{formData.weight} | {formData.dimensions}</div>
+              <motion.div variants={fadeUp} className="p-4 border border-[#1F1F1F] rounded bg-[#0A0A0A] hover:border-[#333] transition-colors group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-[#D4AF37]/5 rounded-full blur-xl"></div>
+                <div className="text-[10px] uppercase tracking-widest opacity-60 mb-2">Độ Mạnh Đầu Tư</div>
+                <div className="text-2xl font-serif text-white">{result.investment_strength}<span className="text-[10px] text-gray-500 ml-1">/100</span></div>
               </motion.div>
-              <motion.div variants={fadeUp} className="p-4 border border-[#1F1F1F] rounded bg-[#0A0A0A] hover:border-[#333] transition-colors group">
-                <div className="flex items-center gap-2 mb-2">
-                  <ShieldAlert className="w-3 h-3 text-gray-500 group-hover:text-[#D4AF37] transition-colors" />
-                  <div className="text-[10px] uppercase tracking-widest opacity-60">Tuổi Đời Phỏng Đoán</div>
-                </div>
-                <div className="font-mono text-xs truncate" title={result.age}>{result.age}</div>
+              <motion.div variants={fadeUp} className="p-4 border border-[#1F1F1F] rounded bg-[#0A0A0A] hover:border-[#333] transition-colors group relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-16 h-16 bg-blue-500/5 rounded-full blur-xl"></div>
+                <div className="text-[10px] uppercase tracking-widest opacity-60 mb-2">Bí Ẩn Lịch Sử</div>
+                <div className="text-2xl font-serif text-white">{result.historical_mystery_score}<span className="text-[10px] text-gray-500 ml-1">/100</span></div>
               </motion.div>
             </div>
 
             {/* Radar Chart */}
             <motion.div variants={fadeUp} className="p-4 border border-[#1F1F1F] rounded bg-[#0A0A0A] h-[250px] relative flex flex-col items-center justify-center hover:border-[#333] transition-colors">
-              <div className="absolute top-4 left-4 text-[10px] uppercase tracking-widest opacity-40 font-bold">Ma Trận Cấu Trúc</div>
+              <div className="absolute top-4 left-4 text-[10px] uppercase tracking-widest opacity-40 font-bold">Ma Trận Giá Trị VIP</div>
               <div className="w-full h-full mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart cx="50%" cy="50%" outerRadius="60%" data={chartData}>
@@ -149,19 +145,32 @@ export function ReportPage({ result, formData, images }: Props) {
                 variants={fadeUp}
                 className="mb-12 p-8 rounded border border-[#D4AF37]/30 bg-[#D4AF37]/5 relative overflow-hidden group">
                 <div className="absolute right-0 top-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/3 group-hover:bg-[#D4AF37]/20 transition-colors duration-1000"></div>
-                <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="relative z-10 flex flex-col md:flex-row shadow-sm justify-between gap-6">
                   <div>
                     <h3 className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] font-bold mb-2 flex items-center gap-2">
-                       <Gavel className="w-3 h-3" /> ĐỊNH GIÁ ƯỚC TÍNH
+                       <Gavel className="w-3 h-3" /> ĐỊNH GIÁ TOÀN CẦU ƯỚC TÍNH
                     </h3>
-                    <div className="font-serif italic text-4xl md:text-5xl lg:text-6xl text-white tracking-tight">
+                    <div className="font-serif italic text-4xl md:text-5xl lg:text-5xl text-white tracking-tight mb-4">
                       {result.valuation}
                     </div>
-                  </div>
-                  <div className="pb-2">
-                    <button className="px-6 py-3 bg-[#D4AF37] text-black text-[10px] font-bold uppercase tracking-widest rounded hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] transition-all">
-                      Lưu Vào Két Sắt
-                    </button>
+                    
+                    {result.reference_price_range && (
+                      <div className="grid grid-cols-2 gap-4 mt-2 mb-4">
+                        <div className="border border-[#D4AF37]/20 bg-black/30 rounded p-3">
+                          <div className="text-[9px] uppercase tracking-widest text-[#D4AF37]/70 mb-1">Thấp Nhất Ghi Nhận</div>
+                          <div className="text-lg text-gray-300 font-serif">{result.reference_price_range.lowest}</div>
+                        </div>
+                        <div className="border border-[#D4AF37]/40 bg-[#D4AF37]/10 rounded p-3">
+                          <div className="text-[9px] uppercase tracking-widest text-[#D4AF37] mb-1">Kỷ Lục Cao Nhất</div>
+                          <div className="text-lg text-[#D4AF37] font-serif">{result.reference_price_range.highest}</div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="mt-4 pt-4 border-t border-[#D4AF37]/20">
+                      <h4 className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-2">Thị Trường Xác Thực</h4>
+                      <p className="text-xs text-gray-400 font-serif leading-relaxed italic">{result.comparable_sales}</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -171,7 +180,7 @@ export function ReportPage({ result, formData, images }: Props) {
                 
                 <motion.div variants={fadeUp}>
                   <h4 className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] font-bold mb-4 flex items-center gap-2">
-                    <Sparkles className="w-3 h-3" /> Cốt Truyện Kinh Điển
+                    <Sparkles className="w-3 h-3" /> Chạm Đáy Lịch Sử & Thời Gian
                   </h4>
                   <p className="font-serif text-lg md:text-xl leading-relaxed text-gray-300 whitespace-pre-wrap">
                     "{result.story}"
@@ -180,14 +189,14 @@ export function ReportPage({ result, formData, images }: Props) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                   <motion.div variants={fadeUp} className="space-y-4">
-                    <h4 className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-bold border-b border-[#1F1F1F] pb-2">Chất Liệu & Nghệ Thuật</h4>
+                    <h4 className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-bold border-b border-[#1F1F1F] pb-2">Bề Mặt & Cấu Trúc Độc Bản</h4>
                     <p className="font-serif text-sm leading-loose text-gray-400 whitespace-pre-wrap">
-                      {result.analysis}
+                      {result.surface_structure}
                     </p>
                   </motion.div>
 
                   <motion.div variants={fadeUp} className="space-y-4">
-                    <h4 className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-bold border-b border-[#1F1F1F] pb-2">Sức Hút Sưu Tập</h4>
+                    <h4 className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-bold border-b border-[#1F1F1F] pb-2">Sức Hút Tới Giới Mộ Điệu</h4>
                     <p className="font-serif text-sm leading-loose text-gray-400 whitespace-pre-wrap">
                       {result.collector_appeal}
                     </p>
@@ -195,21 +204,21 @@ export function ReportPage({ result, formData, images }: Props) {
                 </div>
                 
                 <motion.div variants={fadeUp} className="space-y-4">
-                  <h4 className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-bold border-b border-[#1F1F1F] pb-2">Xác Thực Nguồn Gốc</h4>
+                  <h4 className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-bold border-b border-[#1F1F1F] pb-2">Niên Đại & Nguồn Gốc Sâu Xa</h4>
                   <p className="font-serif text-sm leading-loose text-gray-400 whitespace-pre-wrap">
-                    {result.origin_analysis}
+                    {result.age_and_origin}
                   </p>
                 </motion.div>
 
                 {/* Sales Post Generator output */}
                 <motion.div variants={fadeUp} className="pt-8 border-t border-[#1F1F1F]">
                   <h4 className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] font-bold mb-6 flex items-center gap-2">
-                    <Share2 className="w-3 h-3" /> Hành Trang Chuyển Nhượng VIP
+                    <Share2 className="w-3 h-3" /> Hành Trang Cọ Xát Thị Trường
                   </h4>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-5 rounded bg-[#111] border border-[#1F1F1F] hover:border-[#D4AF37]/40 transition-colors">
-                      <h5 className="text-[10px] uppercase tracking-widest opacity-60 mb-3 font-bold border-b border-[#222] pb-2">Hồ Sơ Sàn Đấu Giá</h5>
+                      <h5 className="text-[10px] uppercase tracking-widest opacity-60 mb-3 font-bold border-b border-[#222] pb-2">Sàn Đấu Giá Tập Trung</h5>
                       <p className="text-xs font-serif leading-relaxed text-gray-400 h-40 overflow-y-auto custom-scrollbar whitespace-pre-wrap">
                         {result.sales_post?.auction || "Dữ liệu đang được phân tích thêm..."}
                       </p>
@@ -221,7 +230,7 @@ export function ReportPage({ result, formData, images }: Props) {
                       </p>
                     </div>
                     <div className="p-5 rounded bg-[#111] border border-[#1F1F1F] hover:border-[#D4AF37]/40 transition-colors">
-                      <h5 className="text-[10px] uppercase tracking-widest opacity-60 mb-3 font-bold border-b border-[#222] pb-2">Tiktok Sang Trọng</h5>
+                      <h5 className="text-[10px] uppercase tracking-widest opacity-60 mb-3 font-bold border-b border-[#222] pb-2">Giải Trí Xa Xỉ (TikTok)</h5>
                       <p className="text-xs font-serif leading-relaxed text-gray-400 h-40 overflow-y-auto custom-scrollbar whitespace-pre-wrap">
                         {result.sales_post?.tiktok || "Dữ liệu đang được phân tích thêm..."}
                       </p>
