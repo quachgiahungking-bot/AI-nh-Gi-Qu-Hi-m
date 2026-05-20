@@ -1,0 +1,6 @@
+{
+  "name": "AI Định Giá Đồ Quý Hiếm",
+  "description": "AI Luxury Discovery Engine - Phân tích, định giá, kể chuyện và chia sẻ vật phẩm quý hiếm.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
